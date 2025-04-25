@@ -1,328 +1,181 @@
-<!DOCTYPE html><html lang="bn">
-<head>
-  <meta charset="UTF-8">
-  <title>আমার ডায়রি</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <style>
-    /* Base Styles */
-    body {
-      font-family: 'Siyam Rupali', sans-serif;
-      background: #212121;
-      margin: 0;
-      padding: 1rem;
-      color: #e0e0e0;
-      box-sizing: border-box;
-      overflow-x: hidden;
-      text-align: center;
-    }
-    header {
-      margin-bottom: 1.5rem;
-      text-shadow: 1px 1px 8px #2196F3;
-    }
-    h1 {
-      font-size: 2.8rem;
-      color: #2196F3;
-      margin-bottom: 0.3rem;
-      transform: perspective(500px) rotateX(12deg);
-      transition: transform 0.3s ease;
-    }
-    h1:hover { transform: perspective(500px) rotateX(25deg); }
-    p {
-      font-size: 1rem;
-      color: #b0bec5;
-      line-height: 1.6;
-    }/* Controls */
-#controls {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 2rem 0;
-  flex-wrap: wrap;
-}
-#searchInput, .date-wrapper {
-  position: relative;
-  flex: 1 1 48%;
-  display: flex;
-  align-items: center;
-  background: #424242;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  padding-left: 2rem;
-  min-width: 200px;
-}
-#searchInput .search-icon, .date-wrapper i {
-  position: absolute;
-  left: 10px;
-  color: #2196F3;
-  font-size: 1.2rem;
-}
-#searchBox, .date-wrapper input[type="date"] {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: #e0e0e0;
-  font-size: 1rem;
-  padding: 0.8rem;
-  appearance: none;
-}
+<!DOCTYPE html><html lang="bn">  
+<head>  
+  <meta charset="UTF-8">  
+  <title>আমার ডায়রি</title>  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">  
+  <style>  
+    body { font-family: 'Siyam Rupali', sans-serif; background: #212121; margin: 0; padding: 1rem; color: #e0e0e0; box-sizing: border-box; overflow-x: hidden; text-align: center; }  
+    header { margin-bottom: 1.5rem; text-shadow: 1px 1px 8px #2196F3; }  
+    h1 { font-size: 2.8rem; color: #2196F3; margin-bottom: 0.3rem; transform: perspective(500px) rotateX(12deg); transition: transform 0.3s ease; }  
+    h1:hover { transform: perspective(500px) rotateX(25deg); }  
+    p { font-size: 1rem; color: #b0bec5; line-height: 1.6; }
 
-/* Post Grid */
-#post-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-.post-card {
-  background: #303030;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-.post-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-}
-.post-card img.main {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: block;
-  border-bottom: 4px solid #2196F3;
-}
-.post-card .caption {
-  padding: 1rem;
-  color: #f8bbd0;
-  font-size: 1.2rem;
-  text-align: center;
-}
-.new-tag {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #ffeb3b;
-  color: #0f1117;
-  padding: 6px 12px;
-  border-radius: 5px;
-  font-size: 1rem;
-}
+    #controls { display: flex; justify-content: space-between; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }  
+    #searchInput, .date-wrapper { position: relative; flex: 1 1 48%; display: flex; align-items: center; background: #424242; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); padding-left: 2rem; min-width: 200px; }  
+    #searchInput .search-icon, .date-wrapper i { position: absolute; left: 10px; color: #2196F3; font-size: 1.2rem; }  
+    #searchBox, .date-wrapper input[type="date"] { flex: 1; border: none; background: transparent; color: #e0e0e0; font-size: 1rem; padding: 0.8rem; appearance: none; }
 
-/* Gallery */
-.gallery-container {
-  padding: 0.5rem;
-  background: #424242;
-}
-.gallery-date {
-  color: #b0bec5;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-.gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-}
-.gallery .thumb-link {
-  display: inline-block;
-  outline: none;
-}
-.thumb {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 2px solid #2196F3;
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
-.thumb-link:hover .thumb {
-  transform: scale(1.1);
-}
+    #post-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; max-width: 100%; margin: 0 auto; padding: 0 1rem; }  
+    .post-card { background: #303030; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; display: flex; flex-direction: column; }  
+    .post-card:hover { transform: translateY(-8px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); }  
+    .post-card img.main { width: 100%; height: 200px; object-fit: cover; display: block; border-bottom: 4px solid #2196F3; }  
+    .post-card .caption { padding: 1rem; color: #f8bbd0; font-size: 1.2rem; text-align: center; }  
+    .new-tag { position: absolute; top: 10px; right: 10px; background-color: #ffeb3b; color: #0f1117; padding: 6px 12px; border-radius: 5px; font-size: 1rem; }
 
-/* Pagination Buttons */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-.btn {
-  outline: 2px solid #2196F3;
-  background: transparent;
-  color: #2196F3;
-  padding: 0.8rem 1.2rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  position: relative;
-  overflow: hidden;
-  font-size: 1rem;
-}
-.btn:active { transform: scale(0.95); }
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+    .gallery-container { padding: 0.5rem; background: #424242; }  
+    .gallery-date { color: #b0bec5; font-size: 0.9rem; margin-bottom: 0.5rem; text-align: center; }  
+    .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; justify-content: center; }  
+    .gallery .thumb-link { display: inline-block; outline: none; }  
+    .thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 2px solid #2196F3; transition: transform 0.2s ease; cursor: pointer; }  
+    .thumb-link:hover .thumb { transform: scale(1.1); }
 
-/* Responsive */
-@media (max-width: 768px) {
-  h1 { font-size: 2.2rem; }
-  #controls { flex-direction: column; align-items: stretch; }
-}
-@media (max-width: 480px) {
-  #post-list { grid-template-columns: 1fr; }
-}
+    .pagination { display: flex; justify-content: center; gap: 1rem; margin: 1.5rem 0; }  
+    .btn { outline: 2px solid #2196F3; background: transparent; color: #2196F3; padding: 0.8rem 1.2rem; border-radius: 8px; cursor: pointer; transition: transform 0.2s ease; position: relative; overflow: hidden; font-size: 1rem; }  
+    .btn:active { transform: scale(0.95); }  
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  </style>
-</head>
-<body>
-  <header>
-    <h1>আমার প্রতিদিনের ডায়রি</h1>
-    <p>আপনার অনুভব করা দিনগুলো খুঁজে নিন...</p>
-  </header>  <div id="controls">
-    <div id="searchInput">
-      <i class="fas fa-search search-icon"></i>
-      <input type="text" id="searchBox" placeholder="কিওয়ার্ড লিখুন">
-    </div>
-    <div class="date-wrapper">
-      <i class="fas fa-calendar-alt"></i>
-      <input type="date" id="dateInput">
-    </div>
-  </div>  <div id="post-list"></div>
-  <div class="pagination" id="pagination"></div>  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const pageSize = 20;
-      let currentPage = 1;
-      let postsData = [];
-      const searchInput = document.getElementById('searchBox');
-      const dateInput = document.getElementById('dateInput');
-      const pagination = document.getElementById('pagination');
+    @media (max-width: 768px) { h1 { font-size: 2.2rem; } #controls { flex-direction: column; align-items: stretch; } }  
+    @media (max-width: 480px) { #post-list { grid-template-columns: 1fr; } }  
+  </style>  
+</head>  
+<body>  
+  <header>  
+    <h1>আমার প্রতিদিনের ডায়রি</h1>  
+    <p>আপনার অনুভব করা দিনগুলো খুঁজে নিন...</p>  
+  </header>  
+  <div id="controls">  
+    <div id="searchInput">  
+      <i class="fas fa-search search-icon"></i>  
+      <input type="text" id="searchBox" placeholder="কিওয়ার্ড লিখুন">  
+    </div>  
+    <div class="date-wrapper">  
+      <i class="fas fa-calendar-alt"></i>  
+      <input type="date" id="dateInput">  
+    </div>  
+  </div>  
+  <div id="post-list"></div>  
+  <div class="pagination" id="pagination"></div>  
 
-      // Create Prev/Next Buttons
-      const prevBtn = document.createElement('button');
-      prevBtn.id = 'prevBtn'; prevBtn.className = 'btn'; prevBtn.textContent = 'Prev';
-      const nextBtn = document.createElement('button');
-      nextBtn.id = 'nextBtn'; nextBtn.className = 'btn'; nextBtn.textContent = 'Next';
-      pagination.append(prevBtn, nextBtn);
-
-      // Load a specific page of posts
-      async function loadPage(page) {
-        postsData = [];
-        const start = (page - 1) * pageSize + 1;
-        const end = page * pageSize;
-        const fetches = [];
-        for (let i = start; i <= end; i++) {
-          const file = `post-${i}.html`;
-          fetches.push(
-            fetch(file)
-              .then(res => res.ok ? res.text() : Promise.reject())
-              .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const dateMeta = doc.querySelector('meta[name="date"]');
-                const date = dateMeta ? dateMeta.content : null;
-                const title = doc.querySelector('h1')?.textContent || `পোস্ট ${i}`;
-                const imgs = Array.from(doc.querySelectorAll('img')).map(img => img.src);
-                postsData.push({ i, file, title, date, imgs });
-              })
-              .catch(() => {})
-          );
-        }
-        await Promise.all(fetches);
-        postsData.sort((a, b) => b.i - a.i);
-        currentPage = page;
-        updateButtons();
-        renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value });
-      }
-
-      function updateButtons() {
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = postsData.length < pageSize;
-      }
-
-      function renderPosts(filter = {}) {
-        const list = document.getElementById('post-list');
-        list.innerHTML = '';
-        const filtered = postsData.filter(post => {
-          const kw = filter.keyword;
-          const dt = filter.date;
-          const kwMatch = !kw || post.title.includes(kw) || post.imgs.some(src => src.includes(kw));
-          const dtMatch = !dt || post.date === dt;
-          return kwMatch && dtMatch;
-        });
-
-        filtered.forEach(post => {
-          const card = document.createElement('div');
-          card.className = 'post-card';
-
-          if (post.i === Math.max(...postsData.map(p => p.i))) {
-            const newTag = document.createElement('div');
-            newTag.className = 'new-tag';
-            newTag.textContent = 'নিউ';
-            card.appendChild(newTag);
-          }
-
-          const imgEl = document.createElement('img');
-          imgEl.className = 'main';
-          imgEl.src = post.imgs[0] || '';
-          imgEl.alt = post.title;
-          card.appendChild(imgEl);
-
-          const caption = document.createElement('div');
-          caption.className = 'caption';
-          const link = document.createElement('a');
-          link.href = post.file;
-          link.textContent = `${post.title} (${post.date || 'তারিখ নেই'})`;
-          link.style.color = '#2196F3';
-          link.style.textDecoration = 'none';
-          caption.appendChild(link);
-          card.appendChild(caption);
-
-          if (post.imgs.length > 1) {
-            const galleryContainer = document.createElement('div');
-            galleryContainer.className = 'gallery-container';
-            const galleryDate = document.createElement('div');
-            galleryDate.className = 'gallery-date';
-            galleryDate.textContent = post.date || 'তারিখ নেই';
-            galleryContainer.appendChild(galleryDate);
-            const gallery = document.createElement('div');
-            gallery.className = 'gallery';
-            post.imgs.slice(1).forEach(src => {
-              const linkThumb = document.createElement('a');
-              linkThumb.className = 'thumb-link';
-              linkThumb.href = post.file;
-              const thumb = document.createElement('img');
-              thumb.className = 'thumb';
-              thumb.src = src;
-              thumb.alt = post.title;
-              linkThumb.appendChild(thumb);
-              gallery.appendChild(linkThumb);
-            });
-            galleryContainer.appendChild(gallery);
-            card.appendChild(galleryContainer);
-          }
-
-          list.appendChild(card);
-        });
-      }
-
-      // Event Listeners
-      prevBtn.addEventListener('click', () => loadPage(currentPage - 1));
-      nextBtn.addEventListener('click', () => loadPage(currentPage + 1));
-      searchInput.addEventListener('input', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
-      dateInput.addEventListener('change', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
-
-      // Initial load
-      loadPage(1);
-    });
-  </script></body>
+  <script>  
+    document.addEventListener('DOMContentLoaded', () => {  
+      const pageSize = 20;  
+      let currentPage = 1;  
+      let postsData = [];  
+      const searchInput = document.getElementById('searchBox');  
+      const dateInput = document.getElementById('dateInput');  
+      const pagination = document.getElementById('pagination');  
+      const prevBtn = document.createElement('button');  
+      prevBtn.id = 'prevBtn'; prevBtn.className = 'btn'; prevBtn.textContent = 'Prev';  
+      const nextBtn = document.createElement('button');  
+      nextBtn.id = 'nextBtn'; nextBtn.className = 'btn'; nextBtn.textContent = 'Next';  
+      pagination.append(prevBtn, nextBtn);  
+  
+      async function loadPage(page) {  
+        postsData = [];  
+        const start = (page - 1) * pageSize + 1;  
+        const end = page * pageSize;  
+        const fetches = [];  
+        for (let i = start; i <= end; i++) {  
+          const file = `post-${i}.html`;  
+          fetches.push(  
+            fetch(file)  
+              .then(res => res.ok ? res.text() : Promise.reject())  
+              .then(html => {  
+                const parser = new DOMParser();  
+                const doc = parser.parseFromString(html, 'text/html');  
+                const dateMeta = doc.querySelector('meta[name="date"]');  
+                const date = dateMeta ? dateMeta.content : null;  
+                const title = doc.querySelector('h1')?.textContent || `পোস্ট ${i}`;  
+                const imgs = Array.from(doc.querySelectorAll('img')).map(img => img.src);  
+                postsData.push({ i, file, title, date, imgs });  
+              })  
+              .catch(() => {})  
+          );  
+        }  
+        await Promise.all(fetches);  
+        postsData.sort((a, b) => b.i - a.i);  
+        currentPage = page;  
+        updateButtons();  
+        renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value });  
+      }  
+  
+      function updateButtons() {  
+        prevBtn.disabled = currentPage === 1;  
+        nextBtn.disabled = postsData.length < pageSize;  
+      }  
+  
+      function renderPosts(filter = {}) {  
+        const list = document.getElementById('post-list');  
+        list.innerHTML = '';  
+        const filtered = postsData.filter(post => {  
+          const kw = filter.keyword;  
+          const dt = filter.date;  
+          const kwMatch = !kw || post.title.includes(kw) || post.imgs.some(src => src.includes(kw));  
+          const dtMatch = !dt || post.date === dt;  
+          return kwMatch && dtMatch;  
+        });  
+  
+        filtered.forEach(post => {  
+          const card = document.createElement('div');  
+          card.className = 'post-card';  
+  
+          if (post.i === Math.max(...postsData.map(p => p.i))) {  
+            const newTag = document.createElement('div');  
+            newTag.className = 'new-tag';  
+            newTag.textContent = 'নিউ';  
+            card.appendChild(newTag);  
+          }  
+  
+          const imgEl = document.createElement('img');  
+          imgEl.className = 'main';  
+          imgEl.src = post.imgs[0] || '';  
+          imgEl.alt = post.title;  
+          card.appendChild(imgEl);  
+  
+          const caption = document.createElement('div');  
+          caption.className = 'caption';  
+          const link = document.createElement('a');  
+          link.href = post.file;  
+          link.textContent = `${post.title} (${post.date || 'তারিখ নেই'})`;  
+          link.style.color = '#2196F3';  
+          link.style.textDecoration = 'none';  
+          caption.appendChild(link);  
+          card.appendChild(caption);  
+  
+          if (post.imgs.length > 0) {  
+            const galleryContainer = document.createElement('div');  
+            galleryContainer.className = 'gallery-container';  
+            const galleryDate = document.createElement('div');  
+            galleryDate.className = 'gallery-date';  
+            galleryDate.textContent = post.date || 'তারিখ নেই';  
+            galleryContainer.appendChild(galleryDate);  
+            const gallery = document.createElement('div');  
+            gallery.className = 'gallery';  
+            const linkThumb = document.createElement('a');  
+            linkThumb.className = 'thumb-link';  
+            linkThumb.href = post.file;  
+            const thumb = document.createElement('img');  
+            thumb.className = 'thumb';  
+            thumb.src = post.imgs[0];  
+            thumb.alt = post.title;  
+            linkThumb.appendChild(thumb);  
+            gallery.appendChild(linkThumb);  
+            galleryContainer.appendChild(gallery);  
+            card.appendChild(galleryContainer);  
+          }  
+  
+          list.appendChild(card);  
+        });  
+      }  
+  
+      prevBtn.addEventListener('click', () => loadPage(currentPage - 1));  
+      nextBtn.addEventListener('click', () => loadPage(currentPage + 1));  
+      searchInput.addEventListener('input', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));  
+      dateInput.addEventListener('change', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));  
+  
+      loadPage(1);  
+    });  
+  </script>  
+</body>  
 </html>
