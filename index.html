@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="bn">    
+<head>    
+  <meta charset="UTF-8">    
+  <title>আমার ডায়রি</title>    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">    
+  <style>    
+    body {    
+      font-family: 'Siyam Rupali', sans-serif;    
+      background: #212121;    
+      margin: 0;    
+      padding: 1rem;    
+      color: #e0e0e0;    
+      box-sizing: border-box;    
+      overflow-x: hidden;    
+      text-align: center;    
+    }    
+    header {    
+      margin-bottom: 1.5rem;    
+      text-shadow: 1px 1px 8px #2196F3;    
+      max-width: 100%;    
+    }    
+    h1 {    
+      font-size: 2.8rem;    
+      color: #2196F3;    
+      margin-bottom: 0.3rem;    
+      transform: perspective(500px) rotateX(12deg);    
+      transition: transform 0.3s ease;    
+    }    
+    h1:hover {    
+      transform: perspective(500px) rotateX(25deg);    
+    }    
+    p {    
+      font-size: 1rem;    
+      color: #b0bec5;    
+      line-height: 1.6;    
+    }    
+    #controls {    
+      display: flex;    
+      justify-content: space-between;    
+      gap: 1rem;    
+      margin: 2rem 0;    
+    }    
+    #searchInput, .date-wrapper {    
+      position: relative;    
+      display: flex;    
+      align-items: center;    
+      background: #424242;    
+      border-radius: 12px;    
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);    
+      padding-left: 2rem;    
+      width: 48%;  /* Adjusted to ensure equal width */
+    }    
+
+    #searchInput .search-icon, .date-wrapper i {    
+      position: absolute;    
+      left: 10px;    
+      color: #2196F3;    
+      font-size: 1.2rem;    
+    }    
+
+    #searchBox {    
+      flex: 1;    
+      border: none;    
+      background: transparent;    
+      color: #e0e0e0;    
+      font-size: 1rem;    
+      padding: 0.8rem;    
+      width: 100%;    
+    }    
+
+    .date-wrapper input[type="date"] {    
+      width: 100%;    
+      padding: 0.8rem;    
+      padding-left: 1.8rem;    
+      font-size: 1rem;    
+      border: none;    
+      background: transparent;    
+      color: #e0e0e0;    
+      appearance: none;    
+      -webkit-appearance: none;    
+    }    
+
+    #post-list {    
+      display: grid;    
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));    
+      gap: 1.5rem;    
+      max-width: 100%;    
+      margin: 0 auto;    
+      padding: 0 1rem;    
+    }    
+    .post-card {    
+      background: #303030;    
+      border-radius: 16px;    
+      overflow: hidden;    
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);    
+      transition: transform 0.3s ease, box-shadow 0.3s ease;    
+      position: relative;    
+    }    
+    .post-card:hover {    
+      transform: translateY(-8px);    
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);    
+    }    
+    .post-card img {    
+      width: 100%;    
+      height: 200px;    
+      object-fit: cover;    
+      display: block;    
+      border-bottom: 4px solid #2196F3;    
+    }    
+    .post-card .caption {    
+      padding: 1rem;    
+      color: #f8bbd0;    
+      font-size: 1.2rem;    
+      text-align: center;    
+    }    
+    .new-tag {    
+      position: absolute;    
+      top: 10px;    
+      right: 10px;    
+      background-color: #ffeb3b;    
+      color: #0f1117;    
+      padding: 6px 12px;    
+      border-radius: 5px;    
+      font-size: 1rem;    
+    }    
+
+    @media (max-width: 768px) {    
+      h1 { font-size: 2.2rem; }    
+      #searchInput, .date-wrapper { width: 100%; }    
+      #controls {    
+        flex-direction: column;    
+        align-items: center;    
+      }    
+      body {    
+        padding-right: 1rem;    
+      }    
+    }    
+
+    @media (max-width: 480px) {    
+      #searchInput { width: 80%; }    
+      .date-wrapper { width: 85%; }    
+      #post-list {    
+        grid-template-columns: 1fr;    
+      }    
+    }    
+
+  </style>    
+</head>    
+<body>    
+  <header>    
+    <h1>আমার প্রতিদিনের ডায়রি</h1>    
+    <p>আপনার অনুভব করা দিনগুলো খুঁজে নিন...</p>    
+  </header>    
+  <div id="controls">    
+    <div id="searchInput">    
+      <i class="fas fa-search search-icon"></i>    
+      <input type="text" id="searchBox" placeholder="কিওয়ার্ড লিখুন">    
+    </div>    
+    <div class="date-wrapper">    
+      <i class="fas fa-calendar-alt"></i>    
+      <input type="date" id="dateInput">    
+    </div>    
+  </div>    
+  <div id="post-list"></div>    
+  <script>    
+    const MAX_POSTS = 1000;    
+    const postsData = [];    
+    let latestPostIndex = 0;    
+    for (let i = 1; i <= MAX_POSTS; i++) {    
+      const file = `post-${i}.html`;    
+
+      fetch(file)    
+        .then(res => {    
+          if (!res.ok) throw new Error();    
+          return res.text();    
+        })    
+        .then(html => {    
+          const parser = new DOMParser();    
+          const doc = parser.parseFromString(html, 'text/html');    
+          const dateMeta = doc.querySelector('meta[name="date"]');    
+          const date = dateMeta ? dateMeta.content : null;    
+          const title = doc.querySelector('h1')?.textContent || `পোস্ট ${i}`;    
+          const bodyText = doc.body?.textContent || '';    
+          const img = `post-${i}/ss.jpg`;    
+
+          postsData.push({ i, file, title, date, content: bodyText, img });    
+
+          if (i === MAX_POSTS) renderPosts();    
+        })    
+        .catch(() => {    
+          if (i === MAX_POSTS) renderPosts();    
+        });    
+    }    
+
+    function renderPosts(filter = {}) {    
+      const list = document.getElementById('post-list');    
+      list.innerHTML = '';    
+
+      const filtered = postsData    
+        .filter(post => {    
+          const keywordMatch = !filter.keyword || post.title.includes(filter.keyword) || post.content.includes(filter.keyword);    
+          const dateMatch = !filter.date || post.date === filter.date;    
+          return keywordMatch && dateMatch;    
+        })    
+        .sort((a, b) => b.i - a.i);    
+
+      filtered.forEach(post => {    
+        const card = document.createElement('div');    
+        card.className = 'post-card';    
+
+        if (post.i === latestPostIndex + 1) {    
+          const newTag = document.createElement('div');    
+          newTag.className = 'new-tag';    
+          newTag.textContent = 'নিউ';    
+          card.appendChild(newTag);    
+          latestPostIndex = post.i;    
+        }    
+
+        const img = document.createElement('img');    
+        img.src = post.img;    
+        img.alt = post.title;    
+
+        const caption = document.createElement('div');    
+        caption.className = 'caption';    
+
+        const link = document.createElement('a');    
+        link.href = post.file;    
+        link.textContent = `${post.title} (${post.date || "তারিখ নেই"})`;    
+        link.style.color = '#2196F3';    
+        link.style.textDecoration = 'none';    
+
+        caption.appendChild(link);    
+        card.appendChild(img);    
+        card.appendChild(caption);    
+        list.appendChild(card);    
+      });    
+    }    
+
+    document.getElementById('searchBox').addEventListener('input', e => {    
+      renderPosts({ keyword: e.target.value.trim(), date: document.getElementById('dateInput').value });    
+    });    
+
+    document.getElementById('dateInput').addEventListener('change', e => {    
+      renderPosts({ keyword: document.getElementById('searchBox').value.trim(), date: e.target.value });    
+    });
+
+  </script>    
+</body>    
+</html>
